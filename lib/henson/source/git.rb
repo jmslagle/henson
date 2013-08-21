@@ -53,7 +53,11 @@ module Henson
       end
 
       def fetched?
-        File.directory? fetch_path
+        if @ref_type == :ref
+          return has_ref?(@target_revision)
+        else
+          File.directory? fetch_path
+        end
       end
 
       def fetch!

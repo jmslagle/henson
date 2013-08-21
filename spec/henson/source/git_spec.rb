@@ -10,8 +10,24 @@ describe Henson::Source::Git do
       expect(Henson::Source::Git.new("foo", :bar => :baz)).to_not be_fetched
     end
 
-    it "returns false if the repo does not have the correct revision"
-    it "returns true if cloned and the correct revision"
+    let(:git) do
+      lambda { |opts = {}|
+        Henson::Source::Git.new "osx_defaults",
+          "https://github.com/wfarr/puppet-osx_defaults",
+          opts
+      }
+    end
+    it "returns false if the repo does not have the correct revision" do
+      lgit = git.(:ref => "0123456")
+      lgit.fetch!
+      expect(lgit).to_not be_fetched
+    end
+    it "returns true if cloned and the correct revision" do
+      lgit = git.(:ref => "ff5e337")
+      lgit.fetch!
+      expect(lgit).to be_fetched
+    end
+
   end
 
   describe "#fetch!" do
